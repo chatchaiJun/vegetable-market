@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-image: linear-gradient(to right, rgb(88, 220, 178), #f4cb80);
+  color: white;
+  /* padding: 10px 20px; */
+  padding-top: 1.5rem !important;
+  padding-bottom: 1.5rem !important;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.navbar a {
+  color: white;
+  text-decoration: none;
+  padding: 0 15px;
+}
+.navbar a:hover {
+  text-decoration: underline;
+}
+/* Additional styles can go here */

@@ -1,0 +1,9 @@
+{% extends 'app_general/base.html' %} {% load crispy_forms_tags %} 
+{% block title %}
+<title>address</title>
+{% endblock%}{% block content %}
+<form method="POST" autocomplete="off">
+  {% csrf_token %}{{addressform | crispy}}
+  <button type="submit" class="btn btn-success">Click</button>
+</form>
+{% endblock %}

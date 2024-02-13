@@ -1,0 +1,37 @@
+{% extends 'app_general/base.html' %} {% block content %}
+
+<div class="row">
+  {% for product in products %}
+  <div class="col-4">
+    <div class="card" style="width: 18rem">
+      <img
+        src="{{product.product_cover.url}}"
+        class="card-img-top"
+        alt="{{product.name}}"
+      />
+      <div class="card-body">
+        <h5 class="card-title">ชื่อสินค้า: {{product.name}}</h5>
+        <p class="card-text">คำอธิบาย: {{product.description}}</p>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            ราคาสินค้า: {{product.price}} บาท/กิโลกรัม
+          </li>
+          <li class="list-group-item">
+            จำนวนสินค้าในคลัง: {{product.stock_quantity}} กิโลกรัม
+          </li>
+          <li class="list-group-item">
+            ประเภทสินค้า: {{product.category.name}}
+          </li>
+        </ul>
+        {% if account != null%} {% if account.role == 'customer'%}
+        <a href="#" class="btn btn-primary">สั่งซื้อสินค้า</a>
+        {% endif %} {%if account.role == 'employee'%}
+        <a href="{% url 'addproduct' %}" class="btn btn-primary">เพิ่มสินค้า</a>
+        {% endif %} {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

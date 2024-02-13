@@ -1,0 +1,16 @@
+{% extends 'app_general/base.html' %} {% load crispy_forms_tags %} 
+{% block title %}
+<title>address</title>
+{% endblock%}{% block content %}
+<form method="POST" autocomplete="off" enctype="multipart/form-data" >
+  {% csrf_token %}{{productforms | crispy}}
+  <select class="form-select" aria-label="Default select example" name="cat">
+    {% for cat in categorys %}
+    <option>{{cat.name}}</option>
+    {% endfor %}
+  </select>
+  <div class="">
+    <button type="submit" class="btn btn-success">Click</button>
+  </div>
+</form>
+{% endblock %}

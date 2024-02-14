@@ -24,14 +24,41 @@
           </li>
         </ul>
         {% if account != null%} {% if account.role == 'customer'%}
-        <a href="#" class="btn btn-primary">สั่งซื้อสินค้า</a>
+        <button
+          type=""
+          button
+          value="{{product.id}}"
+          id="add-cart"
+          class="btn btn-primary"
+        >
+          สั่งซื้อสินค้า
+        </button>
         {% endif %} {%if account.role == 'employee'%}
-        <a href="{% url 'addproduct' %}" class="btn btn-primary">เพิ่มสินค้า</a>
+        <a href="{% url ' ' %}" class="btn btn-primary">เพิ่มสินค้า</a>
         {% endif %} {% endif %}
       </div>
     </div>
   </div>
   {% endfor %}
 </div>
+<script>
+  $(document).on("click", "#add-cart", function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: "POST",
+      url: "{%url 'addcart' %}",
+      data: {
+        product_id: $("#add-cart").val(),
+        csrfmiddlewaretoken: "{{csrf_token}}",
+        action: "post",
+      },
+      success: function (json) {
+        //console.log(json);
+        document.getElementById("cart_quantity").textContent = json.qty;
+      },
+      error: function (xhr, errmsg, err) {},
+    }); /*send stuff to the backend without refreshing the web*/
+  });
+</script>
 
 {% endblock %}

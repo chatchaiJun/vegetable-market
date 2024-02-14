@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "products.apps.ProductsConfig",
-    'members.apps.MembersConfig'
+    'members.apps.MembersConfig',
+    'carts.apps.CartsConfig',
+    
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -73,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'carts.context_processors.cart',
             ],
         },
     },

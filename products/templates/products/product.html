@@ -5,35 +5,59 @@
   <div class="col-4">
     <div class="card" style="width: 18rem">
       <img
-        src="{{product.product_cover.url}}"
+        src="{{ product.product_cover.url }}"
         class="card-img-top"
-        alt="{{product.name}}"
+        alt="{{ product.name }}"
       />
       <div class="card-body">
-        <h5 class="card-title">ชื่อสินค้า: {{product.name}}</h5>
-        <p class="card-text">คำอธิบาย: {{product.description}}</p>
+        <h5 class="card-title">ชื่อสินค้า: {{ product.name }}</h5>
+        <p class="card-text">คำอธิบาย: {{ product.description }}</p>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            ราคาสินค้า: {{product.price}} บาท/กิโลกรัม
+            ราคาสินค้า: {{ product.price }} บาท/กิโลกรัม
           </li>
           <li class="list-group-item">
-            จำนวนสินค้าในคลัง: {{product.stock_quantity}} กิโลกรัม
+            จำนวนสินค้าในคลัง: {{ product.stock_quantity }} กิโลกรัม
           </li>
           <li class="list-group-item">
-            ประเภทสินค้า: {{product.category.name}}
+            ประเภทสินค้า: {{ product.category.name }}
+          </li>
+          <li class="list-group-item">
+            <div class="input-group number-spinner">
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                data-dir="dwn"
+              >
+                -
+              </button>
+              <input
+                type="text"
+                class="form-control text-center number-spinner-input"
+                value="1"
+                id="qty-cart"
+              />
+
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                data-dir="up"
+              >
+                +
+              </button>
+            </div>
           </li>
         </ul>
-        {% if account != null%} {% if account.role == 'customer'%}
+        {% if account != null %} {% if account.role == 'customer' %}
         <button
-          type=""
-          button
-          value="{{product.id}}"
+          type="button"
+          value="{{ product.id }}"
           id="add-cart"
           class="btn btn-primary"
         >
           สั่งซื้อสินค้า
         </button>
-        {% endif %} {%if account.role == 'employee'%}
+        {% endif %} {% if account.role == 'employee' %}
         <a href="{% url ' ' %}" class="btn btn-primary">เพิ่มสินค้า</a>
         {% endif %} {% endif %}
       </div>
@@ -41,23 +65,41 @@
   </div>
   {% endfor %}
 </div>
+
 <script>
   $(document).on("click", "#add-cart", function (e) {
     e.preventDefault();
     $.ajax({
       type: "POST",
-      url: "{%url 'addcart' %}",
+      url: "{% url 'addcart' %}",
       data: {
         product_id: $("#add-cart").val(),
-        csrfmiddlewaretoken: "{{csrf_token}}",
+        product_qty: $("#qty-cart").val(),
+        csrfmiddlewaretoken: "{{ csrf_token }}",
         action: "post",
       },
       success: function (json) {
-        //console.log(json);
         document.getElementById("cart_quantity").textContent = json.qty;
       },
       error: function (xhr, errmsg, err) {},
-    }); /*send stuff to the backend without refreshing the web*/
+    });
+  });
+
+  $(document).on("click", ".number-spinner button", function () {
+    var btn = $(this),
+      oldValue = btn.closest(".number-spinner").find("input").val().trim(),
+      newVal = 0;
+
+    if (btn.attr("data-dir") == "up") {
+      newVal = parseInt(oldValue) + 1;
+    } else {
+      if (oldValue > 1) {
+        newVal = parseInt(oldValue) - 1;
+      } else {
+        newVal = 1;
+      }
+    }
+    btn.closest(".number-spinner").find("input").val(newVal);
   });
 </script>
 

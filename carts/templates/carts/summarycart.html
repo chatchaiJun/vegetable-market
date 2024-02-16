@@ -21,6 +21,36 @@
           <li class="list-group-item">
             ประเภทสินค้า: {{product.category.name}}
           </li>
+          <li class="list-group-item">
+            {% for key, value in quantities.items%}
+            <div class="input-group number-spinner">
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                data-dir="dwn"
+              >
+                -
+              </button>
+              {%if key == product.id|slugify%}
+
+              <input
+                type="text"
+                class="form-control text-center number-spinner-input"
+                value="{{value}}"
+                id="qty-cart"
+              />
+              {% endif%}
+
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                data-dir="up"
+              >
+                +
+              </button>
+            </div>
+            {% endfor %}
+          </li>
         </ul>
         {% if account != null%} {% if account.role == 'customer'%}
         <button

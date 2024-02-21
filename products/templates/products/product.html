@@ -72,23 +72,33 @@
     var product_id = $(this).val();
     var product_qty = parseInt($("#qty-cart").val());
 
+    // Get user ID from wherever it's available
+    var user_id = {{ account.user.id }} // For demonstration, you need to retrieve the user ID appropriately
+
     // Get cart data from local storage
     var cart = JSON.parse(localStorage.getItem("cart")) || {};
 
     // Update cart data
-    if (product_id in cart) {
-      // If the product already exists, increment the quantity
-      cart[product_id] = parseInt(cart[product_id]) + parseInt(product_qty);
+    if (user_id in cart) {
+      // If the user already exists in the cart
+      if (product_id in cart[user_id]) {
+        // If the product already exists, increment the quantity
+        cart[user_id][product_id] += product_qty;
+      } else {
+        // Otherwise, set the quantity
+        cart[user_id][product_id] = product_qty;
+      }
     } else {
-      // Otherwise, set the quantity
-      cart[product_id] = product_qty;
+      // If the user doesn't exist, create a new entry for the user
+      cart[user_id] = {};
+      cart[user_id][product_id] = product_qty;
     }
 
     // Save updated cart data to local storage
     localStorage.setItem("cart", JSON.stringify(cart));
 
     // Update cart quantity display
-    var cart_quantity = Object.keys(cart).length;
+    var cart_quantity = Object.keys(cart[user_id]).length;
     document.getElementById("cart_quantity").textContent = cart_quantity;
 
     // Send AJAX request to add item to cart
@@ -96,6 +106,7 @@
       type: "POST",
       url: "{% url 'addcart' %}",
       data: {
+        user_id: user_id,
         product_id: product_id,
         product_qty: product_qty,
         csrfmiddlewaretoken: "{{ csrf_token }}",
@@ -108,6 +119,7 @@
       },
     });
   });
+
   $(document).on("click", ".number-spinner button", function () {
     var btn = $(this),
       oldValue = btn.closest(".number-spinner").find("input").val().trim(),
@@ -125,5 +137,4 @@
     btn.closest(".number-spinner").find("input").val(newVal);
   });
 </script>
-
 {% endblock %}

@@ -34,20 +34,20 @@ def login_user(request):
         form = LoginForm(request,data=request.POST)
         # cart_data = json.loads(request.POST.get('cart_data'))
         if form.is_valid():
-            cart_json =json.loads(request.POST.get('cart_data'))     
-            quantity = 0
-            product_id = 0
-            for pid, qty in cart_json.items():
-                product_id = pid
-                quantity = qty
-            product = get_object_or_404(Product, id=pid)
-            cart = Cart(request)
-            cart.add(product, quantity)
             username = request.POST.get('username')
             password = request.POST.get('password')
             user =  authenticate(request,username = username, password=password)
             if user is not None:
                 login(request,user)
+                cart_data = json.loads(request.POST.get('cart_data'))
+                account = Account.objects.get(user=request.user)
+                user_id = account.user.id
+                if str(user_id) in cart_data:
+                    product_id = list(cart_data[str(user_id)].keys())[0]  # Assuming the product ID is the first key in the nested dictionary
+                    quantity = cart_data[str(user_id)][product_id]
+                    product = get_object_or_404(Product, id=product_id)
+                    cart = Cart(request)
+                    cart.add(product, quantity)
                 return redirect('home')
 #         else:
 #             messages.success(request,("There was An Error login"))

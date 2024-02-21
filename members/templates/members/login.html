@@ -1,11 +1,25 @@
-{% extends 'app_general/base.html' %} {% block title %}
+{% extends 'app_general/base.html' %}
+{% block title %}
 <title>Login</title>
-{% endblock%} {% load crispy_forms_tags %} {% block content %}
+{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
 <form method="POST">
-  {% csrf_token %}{{loginform|crispy}}
+  {% csrf_token %}
+  {{ loginform|crispy }}
+  <!-- Add a hidden input field to store the cart data -->
+  <input type="hidden" id="cart_data" name="cart_data" value="">
   <p>
     Don't have an account? Create one <a href="{% url 'register' %}">Here</a>!
   </p>
   <button type="submit" class="btn btn-success">Login</button>
 </form>
+<script>
+  $(document).ready(function () {
+    // Get cart data from local storage
+    var cart = JSON.parse(localStorage.getItem("cart")) || {};
+    // Set the value of the hidden input field with cart data
+    $('#cart_data').val(JSON.stringify(cart));
+  });
+</script>
 {% endblock %}

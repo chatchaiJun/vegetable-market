@@ -1,6 +1,10 @@
-from django.shortcuts import render, redirect
+import json
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+
+from carts.cart import Cart
+from products.models import Product
 from . forms import *
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
@@ -24,9 +28,21 @@ from formtools.wizard.views import SessionWizardView
 #         return render(request,'members/login.html',{})
 def login_user(request):
     form = LoginForm()
+    
     if request.method == "POST":
+   
         form = LoginForm(request,data=request.POST)
+        # cart_data = json.loads(request.POST.get('cart_data'))
         if form.is_valid():
+            cart_json =json.loads(request.POST.get('cart_data'))     
+            quantity = 0
+            product_id = 0
+            for pid, qty in cart_json.items():
+                product_id = pid
+                quantity = qty
+            product = get_object_or_404(Product, id=pid)
+            cart = Cart(request)
+            cart.add(product, quantity)
             username = request.POST.get('username')
             password = request.POST.get('password')
             user =  authenticate(request,username = username, password=password)
